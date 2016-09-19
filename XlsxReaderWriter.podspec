@@ -14,7 +14,7 @@ Pod::Spec.new do |s|
   s.requires_arc       = true
 
   s.dependency "SSZipArchive", "~> 1.1"
-  s.dependency "XMLDictionary", "~> 1.4"
+  s.dependency "XMLDictionary", "~> 1.3"
 
 end
 
