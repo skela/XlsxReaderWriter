@@ -7,7 +7,7 @@
 //
 
 #import "BRAOfficeDocumentPackage.h"
-#import "SSZipArchive.h"
+#import <SSZipArchive/SSZipArchive.h>
 #import "BRAContentTypes.h"
 #import "BRARelationships.h"
 
@@ -54,17 +54,17 @@
         NSString *subCacheDirectory = [@"fr.brae.spreadsheetdocument" stringByAppendingPathComponent:[filePath lastPathComponent]];
         self.cacheDirectory = [[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject] stringByAppendingPathComponent:subCacheDirectory];
         
+        BOOL isDir = NO;
+        if (![[NSFileManager defaultManager] fileExistsAtPath:self.cacheDirectory isDirectory:&isDir])
+            [[NSFileManager defaultManager] createDirectoryAtPath:self.cacheDirectory withIntermediateDirectories:YES attributes:nil error:nil];
+        
         [SSZipArchive unzipFileAtPath:filePath toDestination:self.cacheDirectory];
-        
-        
         
         //Read [Content-Types]
         self.contentTypes = [[BRAContentTypes alloc] initWithContentsOfTarget:[self contentTypesFilePath] inParentDirectory:self.cacheDirectory];
         
         //Read _rels/.rels
         self.relationships = [[BRARelationships alloc] initWithContentsOfTarget:[self relationshipsTarget] inParentDirectory:self.cacheDirectory];
-        
-        
         
         //Done reading, clear cache
         [self deleteCacheDirectory];
